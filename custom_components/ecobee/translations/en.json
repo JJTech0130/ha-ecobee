@@ -13,7 +13,8 @@
             },
             "user": {
                 "data": {
-                    "api_key": "API key"
+                    "api_key": "API key",
+                    "auth0_token": "Auth0 cookie"
                 },
                 "description": "Please enter the API key obtained from ecobee.com."
             }

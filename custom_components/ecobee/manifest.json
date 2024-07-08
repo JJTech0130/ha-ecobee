@@ -9,7 +9,7 @@
     "models": ["EB", "ecobee*"]
   },
   "iot_class": "cloud_polling",
-  "loggers": ["pyecobee"],
+  "loggers": ["pyecobee", "custom_components.ecobee"],
   "requirements": [],
   "zeroconf": [
     {
