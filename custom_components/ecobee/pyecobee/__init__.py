@@ -841,34 +841,37 @@ class Ecobee(object):
         body: dict = None,
         auth_request: bool = False,
     ) -> Optional[str]:
-        """
-        Wrapper around _request, to refresh tokens if needed.
-        If an ExpiredTokenError is seen call refresh_tokens and
-        try one more time. Otherwise, send the results up
-        """
-        response = None
-        refreshed = False
-        for _ in range(0, 2):
-            try:
-                response = self._request(
-                    method, endpoint, log_msg_action, params, body, auth_request
-                )
-            except ExpiredTokenError:
-                if not refreshed:
-                    # Refresh tokens and try again
-                    self.refresh_tokens()
-                    refreshed = True
-                    continue
-                else:
-                    # Send the exception up the stack otherwise
-                    raise
-            except InvalidTokenError:
-                raise
+        return self._request(
+            method, endpoint, log_msg_action, params, body, auth_request
+        )
+        # """
+        # Wrapper around _request, to refresh tokens if needed.
+        # If an ExpiredTokenError is seen call refresh_tokens and
+        # try one more time. Otherwise, send the results up
+        # """
+        # response = None
+        # refreshed = False
+        # for _ in range(0, 2):
+        #     try:
+        #         response = self._request(
+        #             method, endpoint, log_msg_action, params, body, auth_request
+        #         )
+        #     except ExpiredTokenError:
+        #         if not refreshed:
+        #             # Refresh tokens and try again
+        #             self.refresh_tokens()
+        #             refreshed = True
+        #             continue
+        #         else:
+        #             # Send the exception up the stack otherwise
+        #             raise
+        #     except InvalidTokenError:
+        #         raise
 
-            # Success, fall out of the loop
-            break
+        #     # Success, fall out of the loop
+        #     break
 
-        return response
+        # return response
 
     def _request(
         self,
