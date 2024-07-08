@@ -163,6 +163,8 @@ class Ecobee(object):
     def request_tokens_web(self) -> bool:
         assert self.auth0_token is not None, "auth0 token must be set before calling request_tokens_web"
 
+        _LOGGER.warning(f"Using auth0 token: {self.auth0_token}")
+
         resp = requests.get(ECOBEE_AUTH_BASE_URL + "/" + ECOBEE_ENDPOINT_AUTH, cookies={"auth0": self.auth0_token}, params={
             "client_id": ECOBEE_WEB_CLIENT_ID,
             "scope": "smartWrite",
@@ -170,7 +172,7 @@ class Ecobee(object):
             "response_mode": "form_post",
             "redirect_uri": "https://www.ecobee.com/home/authCallback",
             "audience": "https://prod.ecobee.com/api/v1",
-        }, timeout=ECOBEE_DEFAULT_TIMEOUT)
+        }, timeout=ECOBEE_DEFAULT_TIMEOUT, allow_redirects=False)
 
         if resp.status_code != 200:
             _LOGGER.error(f"Failed to refresh access token: {resp.status_code} {resp.text}")
@@ -179,6 +181,8 @@ class Ecobee(object):
         if (auth0 := resp.cookies.get("auth0")) is None:
             _LOGGER.error("Failed to refresh access token: no auth0 cookie in response")
         self.auth0_token = auth0
+
+        _LOGGER.warning(f"New auth0 token: {self.auth0_token}")
 
         # Parse the response HTML for the access token and expiration
         if (access_token := resp.text.split('name="access_token" value="')[1].split('"')[0]) is None:
